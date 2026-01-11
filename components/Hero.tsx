@@ -2,35 +2,42 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
-import { motion, TargetAndTransition } from "framer-motion";
+import { motion, TargetAndTransition, Spring } from "framer-motion";
 import Image from "next/image";
 import { Playfair_Display, Montserrat } from "next/font/google";
 
-// ---------------------
-// Шрифты
-// ---------------------
+// Google Fonts
 const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["700", "900"],
 });
-
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
 });
 
-// ---------------------
-// Компонент HeroAbout
-// ---------------------
 export default function HeroAbout() {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [arrowVisible, setArrowVisible] = useState(true);
 
-  // ---------------------
+  // Анимация картинок при наведении
+  const hoverMotion = (
+    active: boolean,
+    hiddenX: number
+  ): TargetAndTransition => ({
+    x: active ? 0 : hiddenX,
+    opacity: active ? 1 : 0.65,
+    scale: 1,
+    transition: {
+      type: "spring" as Spring["type"],
+      stiffness: 50,
+      damping: 18,
+    },
+  });
+
   // Секции проектов
-  // ---------------------
   const sections = [
     {
       id: "projekt-2",
@@ -43,22 +50,7 @@ export default function HeroAbout() {
     { id: "projekt-3", title: "Новий Проект", img: "/5.jpg", align: "right" },
   ];
 
-  // ---------------------
-  // Анимация картинок при hover
-  // ---------------------
-  const hoverMotion = (
-    active: boolean,
-    hiddenX: number
-  ): TargetAndTransition => ({
-    x: active ? 0 : hiddenX,
-    opacity: active ? 1 : 0.65,
-    scale: 1,
-    transition: { type: "spring", stiffness: 50, damping: 18 },
-  });
-
-  // ---------------------
-  // Анимация букв для заголовка
-  // ---------------------
+  // Анимация букв с лёгким отскоком
   const letterVariants = {
     hidden: { opacity: 0, y: -50, rotate: -5 },
     visible: (i: number) => ({
@@ -67,16 +59,14 @@ export default function HeroAbout() {
       rotate: 0,
       transition: {
         delay: i * 0.03,
-        type: "spring",
+        type: "spring" as Spring["type"],
         stiffness: 140,
         damping: 15,
       },
     }),
   };
 
-  // ---------------------
-  // Показ стрелки вниз при скролле
-  // ---------------------
+  // Показываем стрелку, если на верху страницы
   useEffect(() => {
     const handleScroll = () => {
       setArrowVisible(window.scrollY < 20);
@@ -87,14 +77,10 @@ export default function HeroAbout() {
 
   return (
     <section ref={containerRef} className="relative w-full overflow-visible">
-      {/* ----------------- */}
       {/* Фон */}
-      {/* ----------------- */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#1c1c1c] via-[#3a3a3a] to-[#5e5e5e] z-0" />
 
-      {/* ----------------- */}
       {/* Сетка */}
-      {/* ----------------- */}
       <div className="absolute inset-0 pointer-events-none z-10">
         <div
           className="absolute inset-0"
@@ -108,9 +94,7 @@ export default function HeroAbout() {
         />
       </div>
 
-      {/* ----------------- */}
-      {/* Главный заголовок */}
-      {/* ----------------- */}
+      {/* Главные фразы */}
       <div className="relative z-20 min-h-screen flex flex-col items-center justify-center text-center px-6">
         <h1
           className={`text-5xl md:text-6xl lg:text-7xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[#ffffc7] via-[#fcaa67] to-[#da7422] ${playfair.className} flex flex-wrap justify-center`}
@@ -149,13 +133,10 @@ export default function HeroAbout() {
         </h2>
       </div>
 
-      {/* ----------------- */}
-      {/* Стрелка вниз */}
-      {/* ----------------- */}
+      {/* 🔽 Стрелка вниз с надписью */}
       <motion.div
-        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center cursor-pointer ${
-          arrowVisible ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center cursor-pointer
+          ${arrowVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         initial={{ opacity: 0 }}
         animate={{
           opacity: arrowVisible ? 1 : 0,
@@ -189,9 +170,7 @@ export default function HeroAbout() {
         </motion.svg>
       </motion.div>
 
-      {/* ----------------- */}
-      {/* Секции проектов */}
-      {/* ----------------- */}
+      {/* Проекты */}
       {sections.map((sec, i) => {
         const isRight = sec.align === "right";
         const hiddenX = isRight ? 500 : -500;
@@ -202,9 +181,7 @@ export default function HeroAbout() {
             id={sec.id}
             className="relative z-20 w-full h-[900px] mt-20 overflow-visible"
           >
-            {/* ----------------- */}
-            {/* Картинка проекта */}
-            {/* ----------------- */}
+            {/* Картинка */}
             <div
               className={`absolute top-1/4 ${
                 isRight ? "right-0 w-[65%]" : "left-0 w-[65%]"
@@ -239,9 +216,7 @@ export default function HeroAbout() {
               </motion.div>
             </div>
 
-            {/* ----------------- */}
-            {/* Текст проекта */}
-            {/* ----------------- */}
+            {/* Текст */}
             <div
               className={`absolute top-1/4 ${
                 isRight ? "left-0" : "right-0"
