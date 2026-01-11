@@ -53,8 +53,10 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center relative">
+        {/* Логотип */}
         <div className="text-[#FCAA67] font-bold text-xl">YnrY</div>
 
+        {/* Ссылки */}
         <div className="flex items-center gap-6 relative">
           {links.map((link) => (
             <button
@@ -68,6 +70,7 @@ export default function Navbar() {
 
           <div className="w-px h-6 bg-[#FCAA67]/70 mx-3" />
 
+          {/* About dropdown */}
           <div
             className="relative"
             onMouseEnter={() => setIsAboutHover(true)}
