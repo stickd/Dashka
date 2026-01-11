@@ -1,23 +1,23 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
+import { Playfair_Display, Montserrat } from "next/font/google";
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["700", "900"],
+});
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+});
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isAboutHover, setIsAboutHover] = useState(false);
-
   const router = useRouter();
-  const pathname = usePathname(); // Текущий путь
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const pathname = usePathname();
 
   const links = [
     { name: "Home", id: "hero" },
@@ -32,75 +32,76 @@ export default function Navbar() {
     { name: "Kontakt", id: "footer" },
   ];
 
-  // Функция для перехода и скролла
   const handleClick = (id: string) => {
     if (pathname !== "/") {
-      // Если мы на другой странице, переходим на главную с query параметром
       router.push(`/?scrollTo=${id}`);
+      return;
+    }
+
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (id === "footer") {
+      // Скроллим до самого низа футера
+      const scrollPos = el.offsetTop + el.offsetHeight - window.innerHeight;
+      window.scrollTo({ top: scrollPos, behavior: "smooth" });
     } else {
-      // Если мы на главной, просто скроллим
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
+      // Обычный скролл к элементу
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
   return (
-    <nav
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? "bg-black/80 backdrop-blur-md shadow-md" : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center relative">
+    <nav className="fixed top-0 left-0 w-full z-50 px-8 py-4 flex justify-center">
+      <div className="max-w-7xl w-full flex justify-between items-center">
         {/* Логотип */}
-        <div className="text-[#FCAA67] font-bold text-xl">YnrY</div>
+        <div
+          className={`text-3xl font-extrabold uppercase tracking-widest text-[#FCAA67] ${playfair.className} mix-blend-difference transition-all`}
+        >
+          YnrY
+        </div>
 
-        {/* Ссылки */}
-        <div className="flex items-center gap-6 relative">
+        {/* Навигация */}
+        <div
+          className={`flex items-center gap-8 uppercase font-bold text-lg ${montserrat.className}`}
+        >
           {links.map((link) => (
             <button
               key={link.id}
               onClick={() => handleClick(link.id)}
-              className="text-white uppercase tracking-wide hover:text-[#FCAA67] transition"
+              className="transition-all duration-200 mix-blend-difference hover:scale-110"
             >
               {link.name}
             </button>
           ))}
 
-          <div className="w-px h-6 bg-[#FCAA67]/70 mx-3" />
-
-          {/* About dropdown */}
+          {/* About Dropdown */}
           <div
             className="relative"
             onMouseEnter={() => setIsAboutHover(true)}
             onMouseLeave={() => setIsAboutHover(false)}
           >
-            <button className="text-white uppercase tracking-wide hover:text-[#FCAA67] transition">
+            <button className="transition-all duration-200 mix-blend-difference hover:scale-110">
               About
             </button>
 
             <AnimatePresence>
               {isAboutHover && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10 }}
+                  initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.25 }}
-                  className="absolute left-0 mt-2 w-48 bg-black/90 backdrop-blur-md rounded-lg shadow-lg flex flex-col py-2 z-50"
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute left-0 mt-2 flex flex-col gap-1"
                 >
                   {aboutItems.map((item) => (
-                    <React.Fragment key={item.id}>
-                      {item.name === "Kontakt" && (
-                        <div className="border-t border-[#FCAA67]/50 my-1" />
-                      )}
-                      <button
-                        onClick={() => handleClick(item.id)}
-                        className="text-white px-4 py-2 text-left hover:bg-[#FCAA67]/20 transition"
-                      >
-                        {item.name}
-                      </button>
-                    </React.Fragment>
+                    <button
+                      key={item.id}
+                      onClick={() => handleClick(item.id)}
+                      className="px-4 py-1 transition-all duration-200 mix-blend-difference hover:scale-105"
+                    >
+                      {item.name}
+                    </button>
                   ))}
                 </motion.div>
               )}

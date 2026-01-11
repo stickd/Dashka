@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useState, useRef, useEffect } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Playfair_Display, Montserrat } from "next/font/google";
@@ -10,337 +10,145 @@ const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["700", "900"],
 });
-
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["400", "600", "700"],
 });
 
-interface HeroAboutProps {}
-
-export default function HeroAbout({}: HeroAboutProps) {
-  const [isHoverTop, setIsHoverTop] = useState(false);
-  const [isHoverBottom, setIsHoverBottom] = useState(false);
-  const [isHoverFourth, setIsHoverFourth] = useState(false);
-  const [imageWidth, setImageWidth] = useState(1600);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const aboutRef = useRef<HTMLDivElement>(null);
-  const [isHoverFifth, setIsHoverFifth] = useState(false);
+export default function HeroAbout() {
   const router = useRouter();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
-  // Авто-адаптация ширины картинки под экран
-  useEffect(() => {
-    const handleResize = () => {
-      if (!containerRef.current) return;
-      const screenWidth = containerRef.current.offsetWidth;
-      if (imageWidth < screenWidth) {
-        setImageWidth(screenWidth);
-      }
-    };
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [imageWidth]);
+  const hoverMotion = (active: boolean, hiddenX: number) => ({
+    x: active ? 0 : hiddenX,
+    opacity: active ? 1 : 0.65,
+    scale: 1,
+    transition: { type: "spring", stiffness: 50, damping: 18 },
+  });
+
+  const sections = [
+    {
+      id: "projekt-2",
+      title: "Нові Проекти",
+      img: "/3.jpg",
+      align: "right",
+      onClick: () => router.push("/page2"),
+    },
+    { id: "bendorf", title: "Bendorf+", img: "/4.png", align: "left" },
+    { id: "projekt-3", title: "Новий Проект", img: "/5.jpg", align: "right" },
+  ];
 
   return (
-    <section className="relative w-full overflow-visible" ref={containerRef}>
-      {/* --- Background --- */}
-      <div className="absolute inset-0 bg-[linear-gradient(120deg,#473335,#548687,#B0413E)] bg-cover bg-center" />
-      <div className="absolute inset-0 bg-black/55 backdrop-blur-[2px]" />
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[#FCAA67]/30 blur-[120px] rounded-full" />
+    <section ref={containerRef} className="relative w-full overflow-hidden">
+      {/* Фон с градиентом */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1c1c1c] via-[#3a3a3a] to-[#5e5e5e] z-0" />
 
-      {/* --- Hero Content (без кнопок) --- */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-center px-4">
-        <h1
-          className={`mb-4 uppercase tracking-[0.18em] text-5xl sm:text-6xl md:text-7xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#FFFFC7] via-[#A59132] to-[#DA7422] drop-shadow-[0_4px_12px_rgba(0,0,0,0.45)] ${playfair.className}`}
-        >
-          Architektur, die inspiriert
-        </h1>
-
-        <div className="w-36 h-[3px] bg-[#FCAA67] mb-10 shadow-[0_0_20px_#FCAA67]" />
-
-        <p
-          className={`text-[#FFFFC7]/90 text-lg sm:text-xl md:text-2xl max-w-3xl leading-relaxed drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)] ${montserrat.className}`}
-        >
-          Wir erschaffen moderne Räume mit Charakter – Wärme, Stil und
-          Innovation in jedem Projekt.
-        </p>
-      </div>
-
-      {/* --- Bottom About Section (3.jpg) --- */}
-      <div
-        ref={aboutRef}
-        id="about"
-        className="relative z-10 w-full h-[900px] mt-12 overflow-visible"
-      >
-        <div className="absolute top-1/4 right-0 w-[65%] h-full overflow-hidden">
-          <motion.div
-            onMouseEnter={() => setIsHoverBottom(true)}
-            onMouseLeave={() => setIsHoverBottom(false)}
-            onClick={() => router.push("/page2")} // <-- правильно!
-            initial={{ x: 600, opacity: 0.6, scale: 1 }}
-            animate={{
-              x: isHoverBottom ? 0 : 600,
-              opacity: isHoverBottom ? 1 : 0.6,
-              scale: 1,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 50,
-              damping: 20,
-            }}
-            className="absolute top-0 right-0 w-full h-full cursor-pointer"
-          >
-            <Image
-              src="/3.jpg"
-              alt="Projekt Bild"
-              fill
-              className="object-cover w-full h-full pointer-events-none"
-              style={{ objectPosition: "center" }}
-              priority
-            />
-          </motion.div>
-        </div>
-
-        <div className="absolute top-1/4 left-0 w-[35%] flex flex-col px-4 md:px-8">
-          <h2
-            className={`text-4xl md:text-5xl font-bold mb-6 drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] uppercase tracking-[0.05em] ${playfair.className} text-[#FCAA67] mix-blend-difference`}
-          >
-            Нові Проекти
-          </h2>
-
-          <p className="mb-4 text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">Typ / Modul:</span>{" "}
-            Städtebau · Projekt 2
-          </p>
-
-          <p className="mb-4 text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">Zeitraum:</span>{" "}
-            Sommer 2025
-          </p>
-
-          <p className="mb-4 text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">Ort:</span>{" "}
-            Koblenz-Lützel
-          </p>
-
-          <p className="text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">
-              Ziel & Konzept:
-            </span>{" "}
-            Funktional gegliedertes Gebäude für Wohnen und Gesundheit.
-            Erdgeschoss: Apotheke und Eingangspraxis; 1. OG: Praxen und Labor;
-            ab 2. OG: barrierefreie Wohnungen, reguläre Wohnungen, Maisonette.
-            Gestufte Kubatur, Holzfassade, Glasbausteine, begrünte Balkone.
-            Klare Wegeführung, kurze Wege, angenehme Aufenthaltsqualität.
-          </p>
-        </div>
-      </div>
-
-      {/* --- Fourth Section (4.png) --- */}
-      <div className="relative z-10 w-full h-[900px] mt-12">
-        <motion.div
-          onMouseEnter={() => setIsHoverFourth(true)}
-          onMouseLeave={() => setIsHoverFourth(false)}
-          initial={{ left: -imageWidth / 3, scale: 0.8, opacity: 0.6 }}
-          animate={{
-            left: isHoverFourth
-              ? Math.min(
-                  0,
-                  (containerRef.current?.offsetWidth || 0) - imageWidth - 250
-                )
-              : -imageWidth / 3,
-            scale: 0.8,
-            opacity: isHoverFourth ? 1 : 0.6,
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 50,
-            damping: 20,
-          }}
-          className="absolute top-1/4 cursor-pointer"
+      {/* Бледная оранжевая сетка сверху */}
+      <div className="absolute inset-0 pointer-events-none z-10">
+        <div
+          className="absolute inset-0"
           style={{
-            width: imageWidth,
-            height: "60vh",
+            backgroundImage: `
+              linear-gradient(rgba(252,170,103,0.15) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(252,170,103,0.15) 1px, transparent 1px)
+            `,
+            backgroundSize: "120px 120px",
           }}
-        >
-          <Image
-            src="/4.png"
-            alt="Projekt Bild 4"
-            width={imageWidth}
-            height={800}
-            className="object-contain pointer-events-none"
-            style={{ objectPosition: "left center" }}
-            priority
-          />
-        </motion.div>
+        />
+      </div>
 
-        <div className="absolute top-1/4 right-0 w-[35%] flex flex-col px-4 md:px-8">
-          <h2
-            className={`text-4xl md:text-5xl font-bold mb-6 uppercase tracking-[0.05em] ${playfair.className} text-[#FCAA67] drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] mix-blend-difference`}
+      {/* Лицевые фразы */}
+      <div className="relative z-20 min-h-screen flex flex-col items-center justify-center text-center px-6">
+        <div className="flex flex-col gap-6">
+          {/* Основной заголовок */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className={`text-6xl md:text-7xl lg:text-8xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[#ffffc7] via-[#fcaa67] to-[#da7422] ${playfair.className}`}
           >
-            Bendorf+
-          </h2>
+            Architektur beginnt mit einer Frage.
+          </motion.h1>
 
-          <p className="mb-4 text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">Typ / Modul:</span>{" "}
-            Städtebau · Projekt 1
-          </p>
-
-          <p className="mb-4 text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">Zeitraum:</span>{" "}
-            Sommer 2025
-          </p>
-
-          <p className="text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">
-              Ziel & Konzept:
-            </span>{" "}
-            Analyse und Weiterentwicklung eines Wohnquartiers. Nutzung der
-            vorhandenen Infrastruktur, Verbesserung von Freiräumen und
-            funktionaler Vielfalt. Auflösung von Barrieren und Transformation
-            untergenutzter Flächen.
-          </p>
+          {/* Подзаголовок */}
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className={`text-3xl md:text-4xl lg:text-5xl font-medium text-[#ffffc7] ${montserrat.className} italic tracking-wide`}
+          >
+            Form folgt dem Denken, nicht der Gewohnheit.
+          </motion.h2>
         </div>
       </div>
 
-      {/* --- Fifth Section (5.jpg) --- */}
-      <div className="relative z-10 w-full h-[950px] mt-12 overflow-visible">
-        <div className="absolute top-0 right-0 h-[120vh] w-[90%] overflow-visible">
-          <motion.div
-            onMouseEnter={() => setIsHoverFifth(true)}
-            onMouseLeave={() => setIsHoverFifth(false)}
-            initial={{ x: 300, opacity: 0.6, scale: 1 }}
-            animate={{
-              x: isHoverFifth ? 0 : 300,
-              opacity: isHoverFifth ? 1 : 0.6,
-              scale: 1,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 50,
-              damping: 20,
-            }}
-            className="absolute top-0 right-0 w-full h-full cursor-pointer"
+      {/* PROJECTS */}
+      {sections.map((sec, i) => {
+        const isRight = sec.align === "right";
+        const hiddenX = isRight ? 500 : -500;
+
+        return (
+          <div
+            key={sec.id}
+            className="relative z-20 w-full h-[900px] mt-20 overflow-visible"
           >
-            <Image
-              src="/5.jpg"
-              alt="Projekt Bild 5"
-              fill
-              className="object-contain pointer-events-none"
-              style={{ objectPosition: "center" }}
-              priority
-            />
-          </motion.div>
-        </div>
+            {/* IMAGE */}
+            <div
+              className={`absolute top-1/4 ${
+                isRight ? "right-0 w-[65%]" : "left-0 w-[65%]"
+              }`}
+            >
+              <motion.div
+                onMouseEnter={() => setHoverIndex(i)}
+                onMouseLeave={() => setHoverIndex(null)}
+                onClick={sec.onClick}
+                className="relative w-full h-[65vh] cursor-pointer"
+                initial={{ x: hiddenX, opacity: 0.6 }}
+                animate={hoverMotion(hoverIndex === i, hiddenX)}
+              >
+                <Image
+                  src={sec.img}
+                  alt={sec.title}
+                  fill
+                  className="object-cover rounded-xl border-2 border-[#fcaa67]/70 shadow-lg"
+                  loading="lazy"
+                  sizes="(max-width: 1200px) 100vw, 70vw"
+                />
+              </motion.div>
+            </div>
 
-        <div className="absolute top-1/4 left-0 w-[35%] flex flex-col px-4 md:px-8">
-          <h2
-            className={`text-4xl md:text-5xl font-bold mb-6 drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] uppercase tracking-[0.05em] ${playfair.className} text-[#FCAA67] mix-blend-difference`}
-          >
-            Новий Проект
-          </h2>
+            {/* TEXT */}
+            <div
+              className={`absolute top-1/4 ${
+                isRight ? "left-0" : "right-0"
+              } w-[35%] px-6`}
+            >
+              <h3
+                className={`text-5xl font-bold mb-6 uppercase text-[#fcaa67] ${playfair.className}`}
+              >
+                {sec.title}
+              </h3>
 
-          <p className="mb-4 text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">Typ / Modul:</span>{" "}
-            Städtebau · Projekt 3
-          </p>
+              <p className="text-lg md:text-xl text-[#ffffc7] leading-relaxed">
+                Städtebau · Projekt
+              </p>
+              <p className="text-lg md:text-xl text-[#ffffc7] leading-relaxed">
+                Sommer 2025
+              </p>
+              <p className="text-lg md:text-xl text-[#ffffc7] leading-relaxed">
+                Koblenz-Lützel
+              </p>
 
-          <p className="mb-4 text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">Zeitraum:</span>{" "}
-            Sommer 2025
-          </p>
-
-          <p className="mb-4 text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">Ort:</span>{" "}
-            Koblenz-Lützel
-          </p>
-
-          <p className="text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">
-              Ziel & Konzept:
-            </span>{" "}
-            Funktional gegliedertes Gebäude für Wohnen und Gesundheit.
-            Erdgeschoss: Apotheke und Eingangspraxis; 1. OG: Praxen und Labor;
-            ab 2. OG: barrierefreie Wohnungen, reguläre Wohnungen, Maisonette.
-            Gestufte Kubatur, Holzfassade, Glasbausteine, begrünte Balkone.
-            Klare Wegeführung, kurze Wege, angenehme Aufenthaltsqualität.
-          </p>
-        </div>
-      </div>
-
-      {/* --- Top About Section (2.jpg) --- */}
-      {/* --- Top About Section (2.jpg) --- */}
-      <div
-        ref={aboutRef}
-        id="about"
-        className="relative z-10 w-full mt-12 flex justify-center" // flex центрирует картинку
-      >
-        <motion.div
-          onMouseEnter={() => setIsHoverTop(true)}
-          onMouseLeave={() => setIsHoverTop(false)}
-          initial={{ x: -imageWidth / 3, scale: 1, opacity: 0.8 }}
-          animate={{
-            x: isHoverTop
-              ? Math.min(
-                  0,
-                  (containerRef.current?.offsetWidth || 0) - imageWidth - 200
-                )
-              : -imageWidth / 3,
-            scale: 1,
-            opacity: isHoverTop ? 1 : 0.8,
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 50,
-            damping: 20,
-          }}
-          className="relative cursor-pointer" // убрали absolute
-          style={{
-            width: imageWidth,
-            height: imageWidth * 0.5, // делаем картинку "тоньше", например половина ширины
-            maxWidth: "100%", // чтобы не выходила за экран
-            overflow: "visible",
-          }}
-        >
-          <Image
-            src="/2.jpg"
-            alt="Projekt Bild"
-            fill
-            className="object-contain pointer-events-none" // object-contain = полностью видно
-            style={{ objectPosition: "center" }}
-            priority
-          />
-        </motion.div>
-
-        <div className="absolute top-1/4 right-0 w-[35%] flex flex-col px-4 md:px-8">
-          <h2
-            className={`text-4xl md:text-5xl font-bold mb-6 uppercase tracking-[0.05em] ${playfair.className} text-[#FCAA67] drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] mix-blend-difference`}
-          >
-            Bendorf+
-          </h2>
-
-          <p className="mb-4 text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">Typ / Modul:</span>{" "}
-            Städtebau · Projekt 1
-          </p>
-
-          <p className="mb-4 text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">Zeitraum:</span>{" "}
-            Sommer 2025
-          </p>
-
-          <p className="text-lg md:text-xl leading-relaxed mix-blend-difference">
-            <span className="text-[#FCAA67] font-semibold">
-              Ziel & Konzept:
-            </span>{" "}
-            Analyse und Weiterentwicklung eines Wohnquartiers. Nutzung der
-            vorhandenen Infrastruktur, Verbesserung von Freiräumen und
-            funktionaler Vielfalt. Auflösung von Barrieren und Transformation
-            untergenutzter Flächen.
-          </p>
-        </div>
-      </div>
+              <p className="text-lg md:text-xl mt-4 text-[#ffffc7] leading-relaxed">
+                Funktional gegliedertes Gebäude. Wohnen, Praxis, Labor,
+                barrierefreie Wohnungen, Holzfassade, Glasbausteine,
+                Grünflächen.
+              </p>
+            </div>
+          </div>
+        );
+      })}
     </section>
   );
 }

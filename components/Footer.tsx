@@ -53,15 +53,15 @@ export default function FooterHero() {
       initial={{ opacity: 0, y: 60 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="relative w-full overflow-hidden pt-32 px-6 bg-black text-white"
+      className="relative w-full min-h-screen overflow-hidden pt-32 pb-32 px-6 bg-black text-white flex items-center justify-center"
       style={{ scrollMarginTop: 100 }}
     >
-      {/* --- Decorative blur circles like Hero --- */}
+      {/* --- Decorative blur circles --- */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[#FCAA67]/30 blur-[120px] rounded-full" />
       <div className="absolute top-10 left-1/3 w-36 h-36 bg-[#FCAA67]/20 rounded-full blur-[120px]" />
       <div className="absolute bottom-12 right-1/4 w-52 h-52 bg-[#FCAA67]/20 rounded-full blur-[140px]" />
 
-      <div className="max-w-4xl mx-auto flex flex-col gap-12 relative z-10">
+      <div className="max-w-4xl mx-auto flex flex-col gap-12 relative z-10 w-full">
         {/* Contact info */}
         <div className="text-center space-y-3">
           <h3
@@ -69,7 +69,6 @@ export default function FooterHero() {
           >
             Daria Zgherska
           </h3>
-
           <p className="text-lg sm:text-xl">Email: info@gesundheit.de</p>
         </div>
 
@@ -143,19 +142,6 @@ export default function FooterHero() {
             )}
           </AnimatePresence>
         </form>
-
-        {/* Footer links */}
-        <div className="flex flex-wrap justify-center gap-6 text-sm mt-6">
-          <a href="#" className="hover:text-[#FCAA67] transition">
-            Datenschutz
-          </a>
-          <a href="#" className="hover:text-[#FCAA67] transition">
-            Nutzungsbedingungen
-          </a>
-          <a href="#" className="hover:text-[#FCAA67] transition">
-            Kontakt
-          </a>
-        </div>
       </div>
     </motion.footer>
   );
