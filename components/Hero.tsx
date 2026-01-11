@@ -2,11 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
-import { motion, TargetAndTransition, Spring } from "framer-motion";
+import { motion, TargetAndTransition } from "framer-motion";
 import Image from "next/image";
 import { Playfair_Display, Montserrat } from "next/font/google";
 
-// Google Fonts
 const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["700", "900"],
@@ -22,7 +21,7 @@ export default function HeroAbout() {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [arrowVisible, setArrowVisible] = useState(true);
 
-  // Анимация картинок при наведении
+  // Анимация для картинок
   const hoverMotion = (
     active: boolean,
     hiddenX: number
@@ -31,13 +30,12 @@ export default function HeroAbout() {
     opacity: active ? 1 : 0.65,
     scale: 1,
     transition: {
-      type: "spring" as Spring["type"],
+      type: "spring",
       stiffness: 50,
       damping: 18,
     },
   });
 
-  // Секции проектов
   const sections = [
     {
       id: "projekt-2",
@@ -59,7 +57,7 @@ export default function HeroAbout() {
       rotate: 0,
       transition: {
         delay: i * 0.03,
-        type: "spring" as Spring["type"],
+        type: "spring",
         stiffness: 140,
         damping: 15,
       },
@@ -135,8 +133,9 @@ export default function HeroAbout() {
 
       {/* 🔽 Стрелка вниз с надписью */}
       <motion.div
-        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center cursor-pointer
-          ${arrowVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center cursor-pointer ${
+          arrowVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
         initial={{ opacity: 0 }}
         animate={{
           opacity: arrowVisible ? 1 : 0,

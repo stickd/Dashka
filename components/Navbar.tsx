@@ -42,11 +42,9 @@ export default function Navbar() {
     if (!el) return;
 
     if (id === "footer") {
-      // Скроллим до самого низа футера
       const scrollPos = el.offsetTop + el.offsetHeight - window.innerHeight;
       window.scrollTo({ top: scrollPos, behavior: "smooth" });
     } else {
-      // Обычный скролл к элементу
       el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
@@ -54,12 +52,13 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 w-full z-50 px-8 py-4 flex justify-center">
       <div className="max-w-7xl w-full flex justify-between items-center">
-        {/* Логотип */}
-        <div
-          className={`text-3xl font-extrabold uppercase tracking-widest text-[#FCAA67] ${playfair.className} mix-blend-difference transition-all`}
+        {/* Логотип как кнопка Home */}
+        <button
+          onClick={() => handleClick("hero")}
+          className={`text-3xl font-extrabold uppercase tracking-widest text-[#FCAA67] ${playfair.className} mix-blend-difference transition-all hover:scale-110`}
         >
           YnrY
-        </div>
+        </button>
 
         {/* Навигация */}
         <div
