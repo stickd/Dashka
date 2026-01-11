@@ -2,7 +2,12 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
-import { motion, TargetAndTransition } from "framer-motion";
+import {
+  motion,
+  TargetAndTransition,
+  Variants,
+  Transition,
+} from "framer-motion";
 import Image from "next/image";
 import { Playfair_Display, Montserrat } from "next/font/google";
 
@@ -29,11 +34,7 @@ export default function HeroAbout() {
     x: active ? 0 : hiddenX,
     opacity: active ? 1 : 0.65,
     scale: 1,
-    transition: {
-      type: "spring",
-      stiffness: 50,
-      damping: 18,
-    },
+    transition: { type: "spring", stiffness: 50, damping: 18 },
   });
 
   const sections = [
@@ -49,26 +50,25 @@ export default function HeroAbout() {
   ];
 
   // Анимация букв с лёгким отскоком
-  const letterVariants = {
+  const letterTransition: Transition = {
+    type: "spring",
+    stiffness: 140,
+    damping: 15,
+  };
+
+  const letterVariants: Variants = {
     hidden: { opacity: 0, y: -50, rotate: -5 },
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
       rotate: 0,
-      transition: {
-        delay: i * 0.03,
-        type: "spring",
-        stiffness: 140,
-        damping: 15,
-      },
+      transition: { ...letterTransition, delay: i * 0.03 },
     }),
   };
 
   // Показываем стрелку, если на верху страницы
   useEffect(() => {
-    const handleScroll = () => {
-      setArrowVisible(window.scrollY < 20);
-    };
+    const handleScroll = () => setArrowVisible(window.scrollY < 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -131,7 +131,7 @@ export default function HeroAbout() {
         </h2>
       </div>
 
-      {/* 🔽 Стрелка вниз с надписью */}
+      {/* 🔽 Стрелка вниз */}
       <motion.div
         className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center cursor-pointer ${
           arrowVisible ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -202,7 +202,6 @@ export default function HeroAbout() {
                   loading="lazy"
                   sizes="(max-width: 1200px) 100vw, 70vw"
                 />
-
                 {/* Подсказка при наведении */}
                 <motion.div
                   className="absolute inset-0 flex items-center justify-center bg-black/30 text-[#fcaa67] text-lg md:text-xl font-semibold pointer-events-none rounded-xl"
