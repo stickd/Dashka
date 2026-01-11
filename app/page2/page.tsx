@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Playfair_Display, Montserrat } from "next/font/google";
-import Navbar from "../../components/Navbar";
+import Navbar from "../../components/Navbar"; // Навигация
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -36,7 +36,7 @@ export default function ProjectPage() {
     client: "Bee Breeders",
     status: "Competition (Shortlisted)",
     description: `The Reconnect Housing block was an urban housing solution for Shenzhen. 
-We focused on community living, open courtyards, and flexible apartment layouts to enhance urban life.`,
+    We focused on community living, open courtyards, and flexible apartment layouts to enhance urban life.`,
     images: [
       "/projects/reconnect/1.jpg",
       "/projects/reconnect/2.jpg",
@@ -45,23 +45,15 @@ We focused on community living, open courtyards, and flexible apartment layouts 
     ],
   };
 
-  // Функция скролла для Navbar
-  const handleScroll = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <section className="relative w-full min-h-screen bg-[linear-gradient(120deg,#473335,#548687,#B0413E)] text-white overflow-hidden">
-      {/* --- Navbar --- */}
-      <Navbar onScroll={handleScroll} />
+      {/* Навигационная панель */}
+      <Navbar />
 
       <div className="absolute inset-0 bg-black/55 backdrop-blur-[2px]" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row gap-12">
-        {/* --- Галерея слева --- */}
+        {/* Галерея слева */}
         <div className="flex-1 flex flex-col gap-6">
           {project.images.map((src, idx) => (
             <motion.div
@@ -88,7 +80,7 @@ We focused on community living, open courtyards, and flexible apartment layouts 
           ))}
         </div>
 
-        {/* --- Текст справа (фиксирован) --- */}
+        {/* Текст справа */}
         <div className="flex-1">
           <div className="fixed top-24 right-6 w-[35%] flex flex-col text-right z-20">
             <h1
