@@ -28,3 +28,13 @@ html,
 body {
   overflow-x: hidden;
 }
+/* Когда navbar пересекает блок с invert-block */
+.navbar-invert {
+  filter: invert(1);
+  transition: filter 0.3s ease;
+}
+
+/* Кнопки внутри тоже должны инвертироваться */
+.navbar-invert button {
+  filter: invert(1);
+}

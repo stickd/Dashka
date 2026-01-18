@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import { Playfair_Display, Montserrat } from "next/font/google";
@@ -18,6 +18,7 @@ export default function Navbar() {
   const [isAboutHover, setIsAboutHover] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+  const navRef = useRef<HTMLDivElement>(null);
 
   const links = [
     { name: "Home", id: "hero" },
@@ -37,7 +38,6 @@ export default function Navbar() {
       router.push(`/?scrollTo=${id}`);
       return;
     }
-
     const el = document.getElementById(id);
     if (!el) return;
 
@@ -50,12 +50,16 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 px-8 py-4 flex justify-center">
+    <nav
+      ref={navRef}
+      className={`fixed top-0 left-0 w-full z-50 px-8 py-4 flex justify-center
+                  mix-blend-difference pointer-events-auto`}
+    >
       <div className="max-w-7xl w-full flex justify-between items-center">
-        {/* Логотип как кнопка Home */}
+        {/* Логотип */}
         <button
           onClick={() => handleClick("hero")}
-          className={`text-3xl font-extrabold uppercase tracking-widest text-[#FCAA67] ${playfair.className} mix-blend-difference transition-all hover:scale-110`}
+          className={`text-3xl font-extrabold uppercase tracking-widest text-white ${playfair.className} hover:scale-110 transition-all`}
         >
           YnrY
         </button>
@@ -68,7 +72,7 @@ export default function Navbar() {
             <button
               key={link.id}
               onClick={() => handleClick(link.id)}
-              className="transition-all duration-200 mix-blend-difference hover:scale-110"
+              className="text-white hover:scale-110 transition-all"
             >
               {link.name}
             </button>
@@ -80,7 +84,7 @@ export default function Navbar() {
             onMouseEnter={() => setIsAboutHover(true)}
             onMouseLeave={() => setIsAboutHover(false)}
           >
-            <button className="transition-all duration-200 mix-blend-difference hover:scale-110">
+            <button className="text-white hover:scale-110 transition-all">
               About
             </button>
 
@@ -97,7 +101,7 @@ export default function Navbar() {
                     <button
                       key={item.id}
                       onClick={() => handleClick(item.id)}
-                      className="px-4 py-1 transition-all duration-200 mix-blend-difference hover:scale-105"
+                      className="px-4 py-1 text-white hover:scale-105 transition-all"
                     >
                       {item.name}
                     </button>

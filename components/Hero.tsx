@@ -2,12 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState, useEffect } from "react";
-import {
-  motion,
-  TargetAndTransition,
-  Variants,
-  Transition,
-} from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { Playfair_Display, Montserrat } from "next/font/google";
 
@@ -23,19 +18,7 @@ const montserrat = Montserrat({
 export default function HeroAbout() {
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [hoverIndex, setHoverIndex] = useState<number | null>(null);
   const [arrowVisible, setArrowVisible] = useState(true);
-
-  // Анимация для картинок
-  const hoverMotion = (
-    active: boolean,
-    hiddenX: number
-  ): TargetAndTransition => ({
-    x: active ? 0 : hiddenX,
-    opacity: active ? 1 : 0.65,
-    scale: 1,
-    transition: { type: "spring", stiffness: 50, damping: 18 },
-  });
 
   const sections = [
     {
@@ -49,28 +32,25 @@ export default function HeroAbout() {
     { id: "projekt-3", title: "Новий Проект", img: "/5.jpg", align: "right" },
   ];
 
-  // Анимация букв с лёгким отскоком
-  const letterTransition: Transition = {
-    type: "spring",
-    stiffness: 140,
-    damping: 15,
-  };
-
-  const letterVariants: Variants = {
-    hidden: { opacity: 0, y: -50, rotate: -5 },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      rotate: 0,
-      transition: { ...letterTransition, delay: i * 0.03 },
-    }),
-  };
-
-  // Показываем стрелку, если на верху страницы
   useEffect(() => {
-    const handleScroll = () => setArrowVisible(window.scrollY < 20);
+    const handleScroll = () => {
+      const target = document.getElementById("projekt-2");
+      if (!target) return;
+      const rect = target.getBoundingClientRect();
+      // Стрелка видна только если верх блока ниже нижней границы экрана
+      setArrowVisible(rect.top > 0);
+    };
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleScroll);
+
+    // Проверяем сразу при загрузке страницы
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
   }, []);
 
   return (
@@ -92,7 +72,7 @@ export default function HeroAbout() {
         />
       </div>
 
-      {/* Главные фразы */}
+      {/* HERO */}
       <div className="relative z-20 min-h-screen flex flex-col items-center justify-center text-center px-6">
         <h1
           className={`text-5xl md:text-6xl lg:text-7xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-[#ffffc7] via-[#fcaa67] to-[#da7422] ${playfair.className} flex flex-wrap justify-center`}
@@ -100,10 +80,15 @@ export default function HeroAbout() {
           {"Architektur beginnt mit einer Frage?".split("").map((char, i) => (
             <motion.span
               key={i}
-              custom={i}
-              initial="hidden"
-              animate="visible"
-              variants={letterVariants}
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{
+                delay: i * 0.03,
+                type: "spring",
+                stiffness: 140,
+                damping: 15,
+              }}
               className="inline-block"
             >
               {char === " " ? "\u00A0" : char}
@@ -119,10 +104,15 @@ export default function HeroAbout() {
             .map((char, i) => (
               <motion.span
                 key={i}
-                custom={i}
-                initial="hidden"
-                animate="visible"
-                variants={letterVariants}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{
+                  delay: i * 0.02,
+                  type: "spring",
+                  stiffness: 140,
+                  damping: 15,
+                }}
                 className="inline-block"
               >
                 {char === " " ? "\u00A0" : char}
@@ -131,7 +121,7 @@ export default function HeroAbout() {
         </h2>
       </div>
 
-      {/* 🔽 Стрелка вниз */}
+      {/* Стрелка вниз */}
       <motion.div
         className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] flex flex-col items-center cursor-pointer ${
           arrowVisible ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -172,53 +162,46 @@ export default function HeroAbout() {
       {/* Проекты */}
       {sections.map((sec, i) => {
         const isRight = sec.align === "right";
-        const hiddenX = isRight ? 500 : -500;
+        const hiddenX = isRight ? 300 : -300;
 
         return (
           <div
             key={sec.id}
             id={sec.id}
-            className="relative z-20 w-full h-[900px] mt-20 overflow-visible"
+            className="relative z-20 w-full h-[900px] mt-20 overflow-visible invert-block"
           >
             {/* Картинка */}
-            <div
+            <motion.div
               className={`absolute top-1/4 ${
                 isRight ? "right-0 w-[65%]" : "left-0 w-[65%]"
-              }`}
+              } invert-block`}
+              initial={{ x: hiddenX, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ type: "spring", stiffness: 60, damping: 20 }}
             >
-              <motion.div
-                onMouseEnter={() => setHoverIndex(i)}
-                onMouseLeave={() => setHoverIndex(null)}
-                onClick={sec.onClick}
+              <div
                 className="relative w-full h-[65vh] cursor-pointer rounded-xl overflow-hidden shadow-lg border-2 border-[#fcaa67]/70"
-                initial={{ x: hiddenX, opacity: 0.6 }}
-                animate={hoverMotion(hoverIndex === i, hiddenX)}
+                onClick={sec.onClick}
               >
                 <Image
                   src={sec.img}
                   alt={sec.title}
                   fill
                   className="object-cover"
-                  loading="lazy"
-                  sizes="(max-width: 1200px) 100vw, 70vw"
                 />
-                {/* Подсказка при наведении */}
-                <motion.div
-                  className="absolute inset-0 flex items-center justify-center bg-black/30 text-[#fcaa67] text-lg md:text-xl font-semibold pointer-events-none rounded-xl"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: hoverIndex === i ? 1 : 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  Klicke hier
-                </motion.div>
-              </motion.div>
-            </div>
+              </div>
+            </motion.div>
 
             {/* Текст */}
-            <div
+            <motion.div
               className={`absolute top-1/4 ${
                 isRight ? "left-0" : "right-0"
               } w-[35%] px-6`}
+              initial={{ x: isRight ? -200 : 200, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ type: "spring", stiffness: 60, damping: 22 }}
             >
               <h3
                 className={`text-5xl font-bold mb-6 uppercase text-[#fcaa67] ${playfair.className}`}
@@ -239,7 +222,7 @@ export default function HeroAbout() {
                 barrierefreie Wohnungen, Holzfassade, Glasbausteine,
                 Grünflächen.
               </p>
-            </div>
+            </motion.div>
           </div>
         );
       })}
