@@ -23,13 +23,75 @@ export default function HeroAbout() {
   const sections = [
     {
       id: "projekt-2",
-      title: "Нові Проекти",
+      title: "Тітл",
       img: "/3.jpg",
       align: "right",
       onClick: () => router.push("/page2"),
+      textContent: [
+        "Typ / Modul: Städtebau · Projekt 2",
+        "Zeitraum: Sommer 2025",
+        "Ort: Koblenz-Lützel",
+        "",
+        "Ziel & Konzept:",
+        "",
+        "Funktional gegliedertes Gebäude für Wohnen und Gesundheit",
+        "Erdgeschoss: Apotheke und Eingangspraxis; 1. OG: Praxen und Labor; ab 2. OG: barrierefreie Wohnungen, reguläre Wohnungen, Maisonette",
+        "Gestufte Kubatur, Holzfassade, Glasbausteine, begrünte Balkone",
+        "Klare Wegeführung, kurze Wege, angenehme Aufenthaltsqualität",
+      ],
     },
-    { id: "bendorf", title: "Bendorf+", img: "/4.png", align: "left" },
-    { id: "projekt-3", title: "Новий Проект", img: "/5.jpg", align: "right" },
+    {
+      id: "bendorf",
+      title: "Bendorf+",
+      img: "/4.png",
+      align: "left",
+      onClick: () => router.push("/page3"),
+      textContent: [
+        "",
+        "Typ / Modul: Städtebau · Projekt 1",
+        "Zeitraum: Sommer 2025",
+        "",
+        "Ziel & Konzept",
+        "",
+        "Analyse und Weiterentwicklung eines Wohnquartiers",
+        "Nutzung der vorhandenen Infrastruktur, Verbesserung von Freiräumen und funktionaler Vielfalt",
+        "Auflösung von Barrieren und Transformation untergenutzter Flächen",
+      ],
+    },
+    {
+      id: "projekt-3",
+      title: "Zwischen Auftrieb und Boden",
+      img: "/5.jpg",
+      align: "right",
+      onClick: () => router.push("/page4"),
+      textContent: [
+        "Typ / Modul: Baukonstroktion · Projekt 4",
+        "Zeitraum: Sommersemester 2025",
+        "Ort: Koblenz-Winningen",
+        "",
+        "Kurzbeschreibung:",
+        "Entwurf eines mehrgeschossigen Schulungszentrums aus Holz für den Aero-Club Koblenz.",
+        "Das Gebäude gliedert sich in drei funktionale Bereiche – Werkstatt, Lern- und Gemeinschaftsräume sowie Wohnen – und wird durch einen durchgehenden linearen Flur verbunden.",
+        "Flexible Raumstrukturen, die sich zur Landschaft öffnen, und eine nachhaltige Holzbauweise schaffen ein räumliches Konzept zwischen Bewegung, Aufenthalt und Rückzug.",
+      ],
+    },
+    {
+      id: "projekt-4",
+      title: "Entwurfsprojekt",
+      img: "/2.jpg",
+      align: "left",
+      onClick: () => router.push("/page5"),
+      textContent: [
+        "Typ / Modul: Städtebau · Projekt 3",
+        "Zeitraum: Sommersemester 2024–2025",
+        "Ort: Fachbach (nahe Koblenz)",
+        "",
+        "Ziel & Konzept (Kurztext):",
+        "Vereinsgebäude für Wassersport und Freizeit an der Lahn",
+        "Erdgeschoss: Trainingshalle, Bootsgarage, Umkleiden, Duschen",
+        "Obergeschoss: Büroflächen, Aufenthaltsbereich, große Terrasse",
+      ],
+    },
   ];
 
   useEffect(() => {
@@ -37,14 +99,12 @@ export default function HeroAbout() {
       const target = document.getElementById("projekt-2");
       if (!target) return;
       const rect = target.getBoundingClientRect();
-      // Стрелка видна только если верх блока ниже нижней границы экрана
       setArrowVisible(rect.top > 0);
     };
 
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("resize", handleScroll);
 
-    // Проверяем сразу при загрузке страницы
     handleScroll();
 
     return () => {
@@ -208,20 +268,16 @@ export default function HeroAbout() {
               >
                 {sec.title}
               </h3>
-              <p className="text-lg md:text-xl text-[#ffffc7] leading-relaxed">
-                Städtebau · Projekt
-              </p>
-              <p className="text-lg md:text-xl text-[#ffffc7] leading-relaxed">
-                Sommer 2025
-              </p>
-              <p className="text-lg md:text-xl text-[#ffffc7] leading-relaxed">
-                Koblenz-Lützel
-              </p>
-              <p className="text-lg md:text-xl mt-4 text-[#ffffc7] leading-relaxed">
-                Funktional gegliedertes Gebäude. Wohnen, Praxis, Labor,
-                barrierefreie Wohnungen, Holzfassade, Glasbausteine,
-                Grünflächen.
-              </p>
+
+              {/* Текст теперь рендерится из массива textContent */}
+              {sec.textContent?.map((line, idx) => (
+                <p
+                  key={idx}
+                  className="text-lg md:text-xl mt-4 text-[#ffffc7] leading-relaxed"
+                >
+                  {line}
+                </p>
+              ))}
             </motion.div>
           </div>
         );

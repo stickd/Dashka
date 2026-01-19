@@ -16,6 +16,7 @@ const montserrat = Montserrat({
 
 export default function Navbar() {
   const [isAboutHover, setIsAboutHover] = useState(false);
+  const [logoColor, setLogoColor] = useState("text-[#fcaa67]"); // оранжевый по умолчанию
   const router = useRouter();
   const pathname = usePathname();
   const navRef = useRef<HTMLDivElement>(null);
@@ -49,6 +50,30 @@ export default function Navbar() {
     }
   };
 
+  // Intersection Observer для изменения цвета логотипа
+  useEffect(() => {
+    const sections = document.querySelectorAll("section");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Если секция имеет data-logo-blue, меняем цвет на синий
+            if (entry.target.getAttribute("data-logo-blue") === "true") {
+              setLogoColor("text-blue-500");
+            } else {
+              setLogoColor("text-[#fcaa67]"); // оранжевый
+            }
+          }
+        });
+      },
+      { threshold: 0.5 } // срабатывает когда половина секции видна
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <nav
       ref={navRef}
@@ -59,7 +84,7 @@ export default function Navbar() {
         {/* Логотип */}
         <button
           onClick={() => handleClick("hero")}
-          className={`text-3xl font-extrabold uppercase tracking-widest text-white ${playfair.className} hover:scale-110 transition-all`}
+          className={`text-3xl font-extrabold uppercase tracking-widest hover:scale-110 transition-all ${playfair.className} ${logoColor}`}
         >
           YnrY
         </button>

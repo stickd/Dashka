@@ -20,9 +20,26 @@ export default function MiniGallery({ photos = [] }: MiniGalleryProps) {
     setActiveIndex((prev) => Math.min(prev + 1, slides.length - 1));
 
   return (
-    <div className="w-full h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-b from-[#cccccc] to-[#000000]">
+    <div className="w-full h-screen relative overflow-hidden">
+      {/* Фон просто цвет #5e5e5e */}
+      <div className="absolute inset-0 bg-[#5e5e5e] z-0" />
+
+      {/* Сетка поверх фона */}
+      <div className="absolute inset-0 pointer-events-none z-10">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(252,170,103,0.15) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(252,170,103,0.15) 1px, transparent 1px)
+            `,
+            backgroundSize: "120px 120px",
+          }}
+        />
+      </div>
+
       {/* Слайды */}
-      <div className="flex items-center justify-center relative w-full h-full">
+      <div className="flex items-center justify-center relative w-full h-full z-20">
         {slides.map((slide, index) => {
           const offset = index - activeIndex;
           if (offset < -1 || offset > 1) return null; // Показываем только 3 слайда
@@ -42,7 +59,6 @@ export default function MiniGallery({ photos = [] }: MiniGalleryProps) {
                 zIndex,
               }}
               onClick={() => setActiveIndex(index)}
-              // Анимация для плавного исчезновения
               initial={{ opacity: 0 }}
               animate={{ opacity: offset === 0 ? 1 : 0.5 }}
               exit={{ opacity: 0 }}
@@ -66,14 +82,14 @@ export default function MiniGallery({ photos = [] }: MiniGalleryProps) {
       <button
         onClick={prevSlide}
         disabled={activeIndex === 0}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 text-black p-3 rounded-full shadow-md hover:bg-white/90 disabled:opacity-30 transition-all"
+        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 text-black p-3 rounded-full shadow-md hover:bg-white/90 disabled:opacity-30 transition-all z-20"
       >
         ←
       </button>
       <button
         onClick={nextSlide}
         disabled={activeIndex === slides.length - 1}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 text-black p-3 rounded-full shadow-md hover:bg-white/90 disabled:opacity-30 transition-all"
+        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 text-black p-3 rounded-full shadow-md hover:bg-white/90 disabled:opacity-30 transition-all z-20"
       >
         →
       </button>
